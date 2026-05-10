@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  api-test:
+    build: .
+    volumes:
+      - ./report:/app/report
+    environment:
+      - API_ENV=dev
+
+  allure:
+    image: frankescobar/allure-docker-service
+    ports:
+      - "5050:5050"
+    environment:
+      CHECK_RESULTS_EVERY_SECONDS: 1
+    volumes:
+      - ./report:/app/allure-results

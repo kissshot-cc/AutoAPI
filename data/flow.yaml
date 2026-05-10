@@ -1,0 +1,40 @@
+cases:
+  - name: ecommerce_happy_path
+    steps:
+      - api: user.register
+        data:
+          username: flowuser
+          password: secret123
+        no_token: true
+        assert:
+          ok: true
+
+      - api: user.login
+        data:
+          username: flowuser
+          password: secret123
+        no_token: true
+        extract:
+          token: token
+
+      - api: product.add_product
+        data:
+          name: flow-item
+          stock: 3
+          price: 10.5
+        extract:
+          product_id: id
+
+      - api: order.create_order
+        data:
+          product_id: ${product_id}
+          quantity: 1
+        extract:
+          order_id: order_id
+
+      - api: pay.pay_order
+        data:
+          order_id: ${order_id}
+        assert:
+          ok: true
+          status: paid

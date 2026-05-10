@@ -1,0 +1,83 @@
+[project]
+name = "apiauto"
+version = "1.0.0"
+description = "电商接口自动化测试框架 - 基于 pytest + requests + allure + YAML"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+dependencies = [
+    "pytest>=7.0",
+    "requests>=2.28",
+    "PyYAML>=6.0",
+    "allure-pytest>=2.13",
+    "Flask>=3.0",
+    "python-dotenv>=1.0",
+    "jsonpath-ng>=1.6",
+    "jsonschema>=4.0",
+    "faker>=19.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.1",
+    "black>=23.0",
+    "mypy>=1.0",
+    "pre-commit>=3.0",
+    "pytest-cov>=4.0",
+    "pytest-xdist>=3.0",
+    "pytest-rerunfailures>=12.0",
+]
+
+[tool.pytest.ini_options]
+addopts = "-s --alluredir=report --strict-markers --strict-config -ra --tb=short"
+pythonpath = ["."]
+testpaths = ["testcase"]
+markers = [
+    "smoke: 冒烟测试",
+    "regression: 回归测试",
+    "concurrency: 并发测试",
+    "integration: 集成测试",
+]
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+
+[tool.ruff]
+target-version = "py39"
+line-length = 120
+src = ["."]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"conftest.py" = ["F401"]
+
+[tool.black]
+line-length = 120
+target-version = ["py39"]
+include = '\.pyi?$'
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[tool.coverage.run]
+source = ["common", "api"]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "def load_dotenv",
+]
+fail_under = 70
+show_missing = true
+
+[tool.coverage.xml]
+output = "coverage.xml"
